@@ -2,15 +2,28 @@ import styled from "@emotion/styled";
 import { UiPaper, UiPaperProps } from "../Paper/Paper";
 import { is } from "~/tools/is";
 
-interface UiButtonBaseProps extends UiPaperProps<HTMLButtonElement> {
+interface UiButtonProps extends UiPaperProps<HTMLButtonElement> {
   /**
    * @default true
    */
   isInteractive?: boolean;
+  /**
+   * @default false
+   */
+  fullWidth?: boolean;
 }
 
-const UiButtonBase = styled(UiPaper)<UiButtonBaseProps>(
-  ({ shadowWeight = 8, elevation = true, isInteractive = true }) => ({
+export const UiButton = styled(UiPaper, {
+  shouldForwardProp: propName =>
+    propName !== "isInteractive" && propName !== "fullWidth",
+})<UiButtonProps>(
+  ({
+    theme,
+    shadowWeight = 1,
+    elevation = true,
+    isInteractive = true,
+    fullWidth = false,
+  }) => ({
     display: "flex",
     flexDirection: "row",
 
@@ -24,17 +37,17 @@ const UiButtonBase = styled(UiPaper)<UiButtonBaseProps>(
 
     cursor: "pointer",
 
+    userSelect: "none",
+
     ...is(elevation, isInteractive, {
       "&:active": {
-        transform: `translateY(${shadowWeight}px)`,
+        transform: `translateY(${theme.spacing(shadowWeight)})`,
         boxShadow: "none",
       },
     }),
+
+    ...is(fullWidth, {
+      width: "100%",
+    }),
   }),
-);
-
-export interface UiButtonProps extends UiButtonBaseProps {}
-
-export function UiButton(props: UiButtonProps) {
-  return <UiButtonBase {...props} />;
-}
+).withComponent("button");

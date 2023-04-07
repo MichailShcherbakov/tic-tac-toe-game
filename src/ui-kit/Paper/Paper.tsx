@@ -1,8 +1,10 @@
 import styled from "@emotion/styled";
-import { aqua, grey, orange, slate } from "../colors";
+import { PaletteColor } from "../theme";
 import { is } from "~/tools/is";
+import { aqua, grey, orange, slate } from "../colors";
+import { createBoxShadow } from "./helpers/createBoxShadow";
 
-interface UiPaperBaseProps<TElement = HTMLElement>
+export interface UiPaperProps<TElement = HTMLElement>
   extends React.HTMLAttributes<TElement> {
   /**
    * @default
@@ -12,41 +14,52 @@ interface UiPaperBaseProps<TElement = HTMLElement>
   /**
    * @default "contained"
    */
-  variant?: "outlined" | "contained";
+  variant?: "outlined" | "contained" | "text";
   /**
    * @default "neutral"
    */
-  color?: "neutral" | "primary" | "secondary";
+  color?: PaletteColor;
   /**
-   * in px
    * @default
-   * 8
+   * 1
    */
   shadowWeight?: number;
+  /**
+   * @default
+   * false
+   */
+  fullWidth?: boolean;
 }
 
-const UiPaperBase = styled("button", {
+export const UiPaper = styled("div", {
   shouldForwardProp: propName =>
     propName !== "elevation" &&
     propName !== "variant" &&
     propName !== "color" &&
-    propName !== "shadowWeight",
-})<UiPaperBaseProps>(
+    propName !== "shadowWeight" &&
+    propName !== "fullWidth",
+})<UiPaperProps>(
   ({
+    theme,
     variant = "contained",
     color = "neutral",
     elevation = true,
-    shadowWeight = 8,
+    shadowWeight = 1,
+    fullWidth = false,
   }) => ({
-    borderRadius: "0.75rem",
+    borderRadius: theme.spacing(1.5),
 
-    padding: "1rem",
+    padding: theme.spacing(2),
 
     background: "none",
     border: "none",
 
+    ...is(fullWidth, {
+      width: "100%",
+    }),
+
     ...is(elevation, {
-      marginBottom: `${shadowWeight}px`,
+      marginBottom: theme.spacing(shadowWeight),
     }),
 
     ...is(color === "neutral", variant === "outlined", {
@@ -54,7 +67,7 @@ const UiPaperBase = styled("button", {
       backgroundColor: slate[400],
 
       ...is(elevation, {
-        boxShadow: `0 ${shadowWeight}px 0 ${slate[600]}, 0 ${shadowWeight}px 0 ${slate[600]}`,
+        boxShadow: createBoxShadow(theme.spacing(shadowWeight), slate[600]),
       }),
     }),
 
@@ -63,8 +76,12 @@ const UiPaperBase = styled("button", {
       backgroundColor: grey[400],
 
       ...is(elevation, {
-        boxShadow: `0 ${shadowWeight}px 0 ${grey[500]}, 0 ${shadowWeight}px 0 ${grey[500]}`,
+        boxShadow: createBoxShadow(theme.spacing(shadowWeight), grey[500]),
       }),
+    }),
+
+    ...is(color === "neutral", variant === "text", {
+      color: grey[400],
     }),
 
     ...is(color === "primary", variant === "outlined", {
@@ -72,7 +89,7 @@ const UiPaperBase = styled("button", {
       backgroundColor: slate[400],
 
       ...is(elevation, {
-        boxShadow: `0 ${shadowWeight}px 0 ${slate[600]}, 0 ${shadowWeight}px 0 ${slate[600]}`,
+        boxShadow: createBoxShadow(theme.spacing(shadowWeight), slate[600]),
       }),
     }),
 
@@ -81,8 +98,12 @@ const UiPaperBase = styled("button", {
       backgroundColor: orange[400],
 
       ...is(elevation, {
-        boxShadow: `0 ${shadowWeight}px 0 ${orange[500]}, 0 ${shadowWeight}px 0 ${orange[500]}`,
+        boxShadow: createBoxShadow(theme.spacing(shadowWeight), orange[500]),
       }),
+    }),
+
+    ...is(color === "primary", variant === "text", {
+      color: orange[400],
     }),
 
     ...is(color === "secondary", variant === "outlined", {
@@ -90,7 +111,7 @@ const UiPaperBase = styled("button", {
       backgroundColor: slate[400],
 
       ...is(elevation, {
-        boxShadow: `0 ${shadowWeight}px 0 ${slate[600]}, 0 ${shadowWeight}px 0 ${slate[600]}`,
+        boxShadow: createBoxShadow(theme.spacing(shadowWeight), slate[600]),
       }),
     }),
 
@@ -99,15 +120,12 @@ const UiPaperBase = styled("button", {
       backgroundColor: aqua[400],
 
       ...is(elevation, {
-        boxShadow: `0 ${shadowWeight}px 0 ${aqua[500]}, 0 ${shadowWeight}px 0 ${aqua[500]}`,
+        boxShadow: createBoxShadow(theme.spacing(shadowWeight), aqua[500]),
       }),
+    }),
+
+    ...is(color === "secondary", variant === "text", {
+      color: aqua[400],
     }),
   }),
 );
-
-export interface UiPaperProps<TElement = HTMLElement>
-  extends UiPaperBaseProps<TElement> {}
-
-export function UiPaper(props: UiPaperProps) {
-  return <UiPaperBase {...props} />;
-}

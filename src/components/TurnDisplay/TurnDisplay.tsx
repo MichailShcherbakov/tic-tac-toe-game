@@ -3,44 +3,42 @@ import { UiPaper } from "~/ui-kit/Paper";
 
 import { ReactComponent as CrossIcon } from "~/assets/icons/cross.svg";
 import { ReactComponent as CircleIcon } from "~/assets/icons/circle.svg";
-import { paddingX, paddingY } from "~/tools/spacing";
 
-const TurnDisplayBase = styled(UiPaper)(() => ({
+const TurnDisplayBase = styled(UiPaper)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
 
   alignItems: "center",
   justifyContent: "center",
 
-  gap: "0.5rem",
+  gap: theme.spacing(1),
 
-  borderRadius: "0.5rem",
+  borderRadius: theme.spacing(1),
 
-  ...paddingX("0.75rem"),
-  ...paddingY("0.75rem"),
+  padding: theme.spacing(0.75, 0.75),
 }));
 
 TurnDisplayBase.defaultProps = {
   variant: "outlined",
-  shadowWeight: 4,
+  shadowWeight: 0.5,
 };
 
-const TurnDisplayTitle = styled("span")(() => ({
+const TurnDisplayTitle = styled("span")(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
 
   alignItems: "center",
 
-  fontSize: "1rem",
+  fontSize: theme.spacing(2),
   fontWeight: 700,
 
   textTransform: "uppercase",
 }));
 
-const TurnDisplayIconBase = styled("picture")(() => ({
+const TurnDisplayIconBase = styled("picture")(({ theme }) => ({
   "& > *": {
-    width: "1rem",
-    height: "1rem",
+    width: theme.spacing(2),
+    height: theme.spacing(2),
   },
 }));
 

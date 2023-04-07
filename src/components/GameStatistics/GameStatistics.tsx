@@ -1,11 +1,10 @@
 import styled from "@emotion/styled";
-import { paddingY } from "~/tools/spacing";
 import { UiPaper, UiPaperProps } from "~/ui-kit/Paper";
 import { slate } from "~/ui-kit/colors";
 
 interface GameStatisticsBaseProps extends UiPaperProps {}
 
-const GameStatisticsBase = styled(UiPaper)(() => ({
+const GameStatisticsBase = styled(UiPaper)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
 
@@ -13,7 +12,7 @@ const GameStatisticsBase = styled(UiPaper)(() => ({
 
   gap: "0.25rem",
 
-  ...paddingY("0.75rem"),
+  padding: theme.spacing(0.75, 0),
 }));
 
 GameStatisticsBase.defaultProps = {
