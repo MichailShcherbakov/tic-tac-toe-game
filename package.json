@@ -1,0 +1,51 @@
+{
+  "name": "@MichailShcherbakov/tic-tac-toe-game",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "MichailShcherbakov <50011226+MichailShcherbakov@users.noreply.github.com>",
+  "bugs": {
+    "url": "https://github.com/MichailShcherbakov/tic-tac-toe-game/issues"
+  },
+  "homepage": "https://github.com/MichailShcherbakov/tic-tac-toe-game#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichailShcherbakov/tic-tac-toe-game.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint \"src/**/*.ts\" --fix",
+    "lint:check": "eslint \"src/**/*.ts\"",
+    "fmt": "prettier . --write",
+    "fmt:check": "prettier \"src/**/*.ts\" --check",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@fontsource/inter": "^4.5.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite-plugin-svgr": "^2.4.0",
+    "vite-tsconfig-paths": "^4.0.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react": "^3.1.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.7",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0"
+  }
+}
