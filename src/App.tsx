@@ -1,13 +1,12 @@
 import { ThemeProvider } from "@emotion/react";
-import { HomePage } from "./pages/HomePage";
+import { RouterProvider } from "react-router-dom";
 import { theme } from "./ui-kit/theme";
-import { GamePage } from "./pages/GamePage";
+import { router } from "./router";
 
 export function App() {
   return (
     <ThemeProvider theme={theme}>
-      <HomePage />
-      {/* <GamePage /> */}
+      <RouterProvider router={router} />
     </ThemeProvider>
   );
 }
