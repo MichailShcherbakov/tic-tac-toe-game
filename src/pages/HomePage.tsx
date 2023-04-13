@@ -1,5 +1,5 @@
 import { Logo } from "~/components/Logo";
-import { PlayerToggleButtonGroup } from "~/components/PlayerToggleButton/PlayerToggleButtonGroup";
+import { PlayerPreferredMarkToggleButtonGroup } from "~/components/PlayerPreferredMarkToggleButton/PlayerPreferredMarkButtonGroup";
 import { HomePageLayout, HomePageLayoutProps } from "~/layouts/HomePageLayout";
 import { UiButton } from "~/ui-kit/Button";
 import { UiPaper } from "~/ui-kit/Paper";
@@ -16,16 +16,16 @@ export function HomePage(props: HomePageProps) {
         <UiPaper fullWidth variant="outlined">
           <UiStack direction="column" horizontal="center" gap={2}>
             <UiTypography>{"Pick player 1's mark"}</UiTypography>
-            <PlayerToggleButtonGroup value="circle" />
+            <PlayerPreferredMarkToggleButtonGroup />
             <UiTypography>{"Remember: X goes first"}</UiTypography>
           </UiStack>
         </UiPaper>
         <UiStack fullWidth direction="column" horizontal="center" gap={2}>
           <UiButton fullWidth color="primary">
-            New Game (vs cpu)
+            New Game (vs Easy AI)
           </UiButton>
           <UiButton fullWidth color="secondary">
-            New Game (vs player)
+            New Game (vs Hard AI)
           </UiButton>
         </UiStack>
       </UiStack>

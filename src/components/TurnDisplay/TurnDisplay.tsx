@@ -1,59 +1,33 @@
-import styled from "@emotion/styled";
-import { UiPaper } from "~/ui-kit/Paper";
-
 import { ReactComponent as CrossIcon } from "~/assets/icons/cross.svg";
 import { ReactComponent as CircleIcon } from "~/assets/icons/circle.svg";
+import { TurnDisplayBase, TurnDisplayBaseProps } from "./TurnDisplayBase";
+import { TurnDisplayIconBase } from "./TurnDisplayIconBase";
+import { TurnDisplayTitle } from "./TurnDisplayTitle";
+import { useTicTacToeEngine } from "~/hooks/useTicTacToeEngine";
+import { PlayerMarkEnum } from "~/modules/TicTacToeEngine/Player";
+import { observer } from "mobx-react-lite";
+import { ReactElement } from "react";
 
-const TurnDisplayBase = styled(UiPaper)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "row",
-
-  alignItems: "center",
-  justifyContent: "center",
-
-  gap: theme.spacing(1),
-
-  borderRadius: theme.spacing(1),
-
-  padding: theme.spacing(0.75, 0.75),
-}));
-
-TurnDisplayBase.defaultProps = {
-  variant: "outlined",
-  shadowWeight: 0.5,
+const MARKS: Record<PlayerMarkEnum, ReactElement> = {
+  [PlayerMarkEnum.CROSS]: <CrossIcon />,
+  [PlayerMarkEnum.CIRCLE]: <CircleIcon />,
 };
 
-const TurnDisplayTitle = styled("span")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "row",
+export interface TurnDisplayProps extends TurnDisplayBaseProps {}
 
-  alignItems: "center",
+export const TurnDisplay = observer((props: TurnDisplayProps) => {
+  const { engine } = useTicTacToeEngine();
 
-  fontSize: theme.spacing(2),
-  fontWeight: 700,
-
-  textTransform: "uppercase",
-}));
-
-const TurnDisplayIconBase = styled("picture")(({ theme }) => ({
-  "& > *": {
-    width: theme.spacing(2),
-    height: theme.spacing(2),
-  },
-}));
-
-export interface TurnDisplayProps {
-  turn: "cross" | "circle";
-}
-
-export function TurnDisplay({ turn, ...props }: TurnDisplayProps) {
   return (
     <TurnDisplayBase {...props}>
-      <TurnDisplayIconBase>
-        {turn === "cross" && <CrossIcon />}
-        {turn === "circle" && <CircleIcon />}
-      </TurnDisplayIconBase>
-      <TurnDisplayTitle>Turn</TurnDisplayTitle>
+      {engine.nextTurnPlayer && (
+        <>
+          <TurnDisplayIconBase>
+            {MARKS[engine.nextTurnPlayer.mark]}
+          </TurnDisplayIconBase>
+          <TurnDisplayTitle>Turn</TurnDisplayTitle>
+        </>
+      )}
     </TurnDisplayBase>
   );
-}
+});

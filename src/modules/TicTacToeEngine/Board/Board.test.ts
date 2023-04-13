@@ -1,16 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { Board } from "./Board";
-import { Player, PlayerKindEnum, PlayerMarkEnum } from "./Player";
-import { COLUMN_NUM, ROW_NUM } from "./constants";
+import { Board } from "../Board/Board";
+import { Player, PlayerKindEnum, PlayerMarkEnum } from "../Player/Player";
+import { COLUMN_NUM, ROW_NUM } from "../constants";
 
 describe("Board", () => {
   const human = new Player(PlayerKindEnum.HUMAN, PlayerMarkEnum.CROSS);
   const ai = new Player(PlayerKindEnum.AI, PlayerMarkEnum.CIRCLE);
 
   it("getAvailableCells", () => {
-    expect(Board.empty().getAvailableCells()).toHaveLength(
-      ROW_NUM * COLUMN_NUM,
-    );
+    expect(Board.empty().availableCells).toHaveLength(ROW_NUM * COLUMN_NUM);
     expect(
       /**
        * [H][A][H]
@@ -24,17 +22,16 @@ describe("Board", () => {
         .mark(1, 0, ai)
         .mark(1, 1, human)
         .mark(1, 2, human)
-        .mark(2, 0, ai)
-        .getAvailableCells(),
+        .mark(2, 0, ai).availableCells,
     ).toHaveLength(2);
   });
 
   it("isEmpty", () => {
-    expect(Board.empty().isEmpty()).toBeTruthy();
+    expect(Board.empty().isEmpty).toBeTruthy();
   });
 
   it("isFull", () => {
-    expect(Board.empty().isFull()).toBeFalsy();
+    expect(Board.empty().isFull).toBeFalsy();
     expect(
       /**
        * [H][A][H]
@@ -50,14 +47,13 @@ describe("Board", () => {
         .mark(1, 2, human)
         .mark(2, 0, ai)
         .mark(2, 1, human)
-        .mark(2, 2, ai)
-        .isFull(),
+        .mark(2, 2, ai).isFull,
     ).toBeTruthy();
   });
 
   describe("isTerminal", () => {
     it("isEmpty", () => {
-      expect(Board.empty().isTerminal()).toBeFalsy();
+      expect(Board.empty().isTerminal).toBeFalsy();
     });
 
     it("isFull & draw", () => {
@@ -76,8 +72,7 @@ describe("Board", () => {
           .mark(1, 2, human)
           .mark(2, 0, ai)
           .mark(2, 1, human)
-          .mark(2, 2, ai)
-          .isTerminal(),
+          .mark(2, 2, ai).isTerminal,
       ).toEqual({
         winner: "draw",
       });
@@ -98,8 +93,7 @@ describe("Board", () => {
           .mark(1, 1, human)
           .mark(1, 2, human)
           .mark(2, 0, ai)
-          .mark(2, 1, human)
-          .isTerminal(),
+          .mark(2, 1, human).isTerminal,
       ).toBeFalsy();
     });
 
@@ -132,7 +126,7 @@ describe("Board", () => {
         2,
       ],
     ])("horizontal", (board, rowIndex) => {
-      expect(board.isTerminal()).toEqual({
+      expect(board.isTerminal).toEqual({
         winner: human,
         direction: "H",
         rowIndex,
@@ -168,7 +162,7 @@ describe("Board", () => {
         2,
       ],
     ])("vertical", (board, columnIndex) => {
-      expect(board.isTerminal()).toEqual({
+      expect(board.isTerminal).toEqual({
         winner: human,
         direction: "V",
         columnIndex,
@@ -217,7 +211,20 @@ describe("Board", () => {
         undefined,
       ],
     ])("diagonal", (board, diagonal) => {
-      expect(board.isTerminal()).toEqual(diagonal);
+      expect(board.isTerminal).toEqual(diagonal);
     });
+  });
+
+  it("should clear board", () => {
+    const board = Board.empty()
+      .mark(0, 0, human)
+      .mark(1, 0, human)
+      .mark(2, 0, human);
+
+    expect(board.isEmpty).toBeFalsy();
+
+    board.clear();
+
+    expect(board.isEmpty).toBeTruthy();
   });
 });

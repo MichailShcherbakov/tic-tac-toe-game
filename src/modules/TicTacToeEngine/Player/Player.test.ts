@@ -1,7 +1,7 @@
 import { describe, expect } from "vitest";
-import { Board } from "./Board";
-import { Player, PlayerKindEnum, PlayerMarkEnum } from "./Player";
-import { Cell } from "./Cell";
+import { Board } from "../Board/Board";
+import { Player, PlayerKindEnum, PlayerMarkEnum } from "../Player/Player";
+import { Cell } from "../Cell/Cell";
 
 describe("Player", () => {
   const human = new Player(PlayerKindEnum.HUMAN, PlayerMarkEnum.CROSS);
@@ -20,7 +20,7 @@ describe("Player", () => {
         .mark(1, 2, human)
         .mark(2, 0, ai)
         .mark(2, 2, ai),
-      { rowIndex: 2, columnIndex: 1, markedBy: null } as Cell,
+      new Cell(2, 1),
     ],
     [
       /**
@@ -34,7 +34,7 @@ describe("Player", () => {
         .mark(2, 0, ai)
         .mark(2, 1, human)
         .mark(2, 2, human),
-      { rowIndex: 0, columnIndex: 2, markedBy: null } as Cell,
+      new Cell(0, 2),
     ],
   ])("AI algorithm", (board, cell) => {
     expect(ai.getBestMove(board)).toEqual(cell);

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { UiPaper, UiPaperProps } from "../Paper/Paper";
 import { is } from "~/tools/is";
 
-interface UiButtonProps extends UiPaperProps<HTMLButtonElement> {
+export interface UiButtonProps extends UiPaperProps<HTMLButtonElement> {
   /**
    * @default true
    */
@@ -11,11 +11,17 @@ interface UiButtonProps extends UiPaperProps<HTMLButtonElement> {
    * @default false
    */
   fullWidth?: boolean;
+  /**
+   * @default not use (undefined)
+   */
+  isActive?: boolean;
 }
 
 export const UiButton = styled(UiPaper, {
   shouldForwardProp: propName =>
-    propName !== "isInteractive" && propName !== "fullWidth",
+    propName !== "isInteractive" &&
+    propName !== "fullWidth" &&
+    propName !== "isActive",
 })<UiButtonProps>(
   ({
     theme,
@@ -23,6 +29,7 @@ export const UiButton = styled(UiPaper, {
     elevation = true,
     isInteractive = true,
     fullWidth = false,
+    isActive,
   }) => ({
     display: "flex",
     flexDirection: "row",
@@ -44,6 +51,11 @@ export const UiButton = styled(UiPaper, {
         transform: `translateY(${theme.spacing(shadowWeight)})`,
         boxShadow: "none",
       },
+    }),
+
+    ...is(isActive !== undefined, !!isActive, {
+      transform: `translateY(${theme.spacing(shadowWeight)})`,
+      boxShadow: "none",
     }),
 
     ...is(fullWidth, {

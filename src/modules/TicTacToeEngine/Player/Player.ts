@@ -1,5 +1,6 @@
-import { Board } from "./Board";
-import { Cell } from "./Cell";
+import { makeAutoObservable } from "mobx";
+import { Board } from "../Board/Board";
+import { Cell } from "../Cell/Cell";
 
 export enum PlayerKindEnum {
   HUMAN = "HUMAN",
@@ -15,9 +16,15 @@ export class Player {
   public constructor(
     public readonly kind: PlayerKindEnum,
     public readonly mark: PlayerMarkEnum,
-    private readonly maxDepth = -1,
+    private readonly maxDepth = 3,
     private readonly nodesMap = new Map<number, Cell[]>(),
-  ) {}
+  ) {
+    makeAutoObservable(this);
+  }
+
+  public clone(): Player {
+    return new Player(this.kind, this.mark, this.maxDepth, this.nodesMap);
+  }
 
   public getBestMove(board: Board): Cell;
   public getBestMove(
@@ -28,12 +35,10 @@ export class Player {
   public getBestMove(board: Board, maximizing = true, depth = 0) {
     if (depth == 0) this.nodesMap.clear();
 
-    const terminalBoard = board.isTerminal();
+    if (board.isTerminal || depth === this.maxDepth) {
+      if (!board.isTerminal?.winner) return 0;
 
-    if (terminalBoard || depth === this.maxDepth) {
-      if (!terminalBoard?.winner) return 0;
-
-      if (terminalBoard.winner === this) {
+      if (board.isTerminal.winner === this) {
         return 100 - depth;
       }
 
@@ -43,7 +48,7 @@ export class Player {
     if (maximizing) {
       let best = -100;
 
-      board.getAvailableCells().forEach(cell => {
+      board.availableCells.forEach(cell => {
         const child = board.clone();
 
         child.mark(cell.rowIndex, cell.columnIndex, this);
@@ -84,7 +89,7 @@ export class Player {
     if (!maximizing) {
       let best = 100;
 
-      board.getAvailableCells().forEach(cell => {
+      board.availableCells.forEach(cell => {
         const child = board.clone();
 
         child.mark(cell.rowIndex, cell.columnIndex, this);

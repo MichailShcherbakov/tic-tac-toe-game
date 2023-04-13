@@ -1,24 +1,29 @@
-import styled from "@emotion/styled";
 import { Cell } from "../Cell";
-import { UiGird } from "~/ui-kit/Grid";
+import { observer } from "mobx-react-lite";
+import { Cell as CellType } from "~/modules/TicTacToeEngine/Cell";
+import { BattleFieldBase, BattleFieldBaseProps } from "./BattleFieldBase";
+import { useTicTacToeEngine } from "~/hooks/useTicTacToeEngine";
 
-export const BattleFieldBase = styled(UiGird)(() => ({
-  width: "fit-content",
-}));
+export interface BattleFieldProps extends BattleFieldBaseProps {}
 
-BattleFieldBase.defaultProps = {
-  cols: 3,
-};
+export const BattleField = observer((props: BattleFieldProps) => {
+  const { engine } = useTicTacToeEngine();
 
-export function BattleField() {
+  function cellClickHandler(_: React.MouseEvent<HTMLElement>, cell?: CellType) {
+    if (!cell) return;
+
+    engine.move(cell.rowIndex, cell.columnIndex, engine.players[0]);
+  }
+
   return (
-    <BattleFieldBase>
-      {new Array(9).fill(0).map((_, idx) => (
+    <BattleFieldBase {...props}>
+      {engine.board.cells.map(cell => (
         <Cell
-          key={idx}
-          value={idx % 2 ? "cross" : idx % 4 ? "circle" : undefined}
+          key={`${cell.rowIndex}-${cell.columnIndex}`}
+          cell={cell}
+          onClick={cellClickHandler}
         />
       ))}
     </BattleFieldBase>
   );
-}
+});

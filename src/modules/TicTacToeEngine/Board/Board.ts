@@ -1,6 +1,7 @@
-import { Cell } from "./Cell";
-import { Player } from "./Player";
-import { COLUMN_NUM, ROW_NUM } from "./constants";
+import { makeAutoObservable } from "mobx";
+import { Cell } from "../Cell/Cell";
+import { Player } from "../Player/Player";
+import { COLUMN_NUM, ROW_NUM } from "../constants";
 
 export type TerminalBoard =
   | {
@@ -13,18 +14,16 @@ export type TerminalBoard =
   | { winner: "draw" };
 
 export class Board {
-  public constructor(public readonly cells: Cell[]) {}
+  public constructor(public readonly cells: Cell[]) {
+    makeAutoObservable(this);
+  }
 
   public static empty(): Board {
     const cells: Cell[] = [];
 
     for (let rowIndex = 0; rowIndex < ROW_NUM; ++rowIndex) {
       for (let columnIndex = 0; columnIndex < COLUMN_NUM; ++columnIndex) {
-        cells.push({
-          rowIndex,
-          columnIndex,
-          markedBy: null,
-        });
+        cells.push(new Cell(rowIndex, columnIndex));
       }
     }
 
@@ -32,19 +31,13 @@ export class Board {
   }
 
   public clone(): Board {
-    return new Board([...this.cells.map(cell => ({ ...cell }))]);
+    return new Board([...this.cells.map(cell => cell.clone())]);
   }
 
-  public getCell(rowIndex: Cell["rowIndex"], columnIndex: Cell["columnIndex"]) {
-    if (
-      rowIndex < 0 ||
-      rowIndex >= ROW_NUM ||
-      columnIndex < 0 ||
-      columnIndex >= COLUMN_NUM
-    ) {
-      throw new Error(`Not correct indexes`);
-    }
-
+  public getCell(
+    rowIndex: Cell["rowIndex"],
+    columnIndex: Cell["columnIndex"],
+  ): Cell | undefined {
     return this.cells[columnIndex + rowIndex * ROW_NUM];
   }
 
@@ -55,37 +48,38 @@ export class Board {
   ): this {
     const cell = this.getCell(rowIndex, columnIndex);
 
-    if (cell.markedBy) return this;
+    if (!cell || cell?.markedBy) return this;
 
     cell.markedBy = player;
 
     return this;
   }
 
-  public getAvailableCells(): Cell[] {
+  public get availableCells(): Cell[] {
     return this.cells.filter(cell => !cell.markedBy);
   }
 
-  public isEmpty() {
+  public get isEmpty() {
     return this.cells.every(cell => !cell.markedBy);
   }
 
-  public isFull() {
+  public get isFull() {
     return this.cells.every(cell => cell.markedBy);
   }
 
-  public isTerminal(): TerminalBoard | undefined {
-    if (this.isEmpty()) return;
+  public get isTerminal(): TerminalBoard | undefined {
+    if (this.isEmpty) return;
 
     for (let rowIndex = 0; rowIndex < ROW_NUM; ++rowIndex) {
       let isFound = true;
-      const firstColumn = this.getCell(rowIndex, 0);
+      const firstColumn = this.getCell(rowIndex, 0)!;
 
       if (!firstColumn.markedBy) continue;
 
       for (let columnIndex = 1; columnIndex < COLUMN_NUM; ++columnIndex) {
         isFound =
-          firstColumn.markedBy === this.getCell(rowIndex, columnIndex).markedBy;
+          firstColumn.markedBy ===
+          this.getCell(rowIndex, columnIndex)!.markedBy;
 
         if (!isFound) break;
       }
@@ -101,13 +95,13 @@ export class Board {
 
     for (let columnIndex = 0; columnIndex < COLUMN_NUM; ++columnIndex) {
       let isFound = true;
-      const firstRow = this.getCell(0, columnIndex);
+      const firstRow = this.getCell(0, columnIndex)!;
 
       if (!firstRow.markedBy) continue;
 
       for (let rowIndex = 1; rowIndex < ROW_NUM; ++rowIndex) {
         isFound =
-          firstRow.markedBy === this.getCell(rowIndex, columnIndex).markedBy;
+          firstRow.markedBy === this.getCell(rowIndex, columnIndex)!.markedBy;
 
         if (!isFound) break;
       }
@@ -125,14 +119,14 @@ export class Board {
       let rowIndex = 0,
         columnIndex = 0,
         isFound = true,
-        firstCell = this.getCell(0, 0);
+        firstCell = this.getCell(0, 0)!;
       rowIndex < ROW_NUM && isFound;
       ++rowIndex, ++columnIndex
     ) {
       if (!firstCell.markedBy) break;
 
       isFound =
-        firstCell.markedBy === this.getCell(rowIndex, columnIndex).markedBy;
+        firstCell.markedBy === this.getCell(rowIndex, columnIndex)!.markedBy;
 
       if (isFound && rowIndex + 1 === ROW_NUM) {
         return {
@@ -147,14 +141,14 @@ export class Board {
       let rowIndex = 0,
         columnIndex = COLUMN_NUM - 1,
         isFound = true,
-        firstCell = this.getCell(0, COLUMN_NUM - 1);
+        firstCell = this.getCell(0, COLUMN_NUM - 1)!;
       rowIndex < ROW_NUM && isFound;
       ++rowIndex, --columnIndex
     ) {
       if (!firstCell.markedBy) break;
 
       isFound =
-        firstCell.markedBy === this.getCell(rowIndex, columnIndex).markedBy;
+        firstCell.markedBy === this.getCell(rowIndex, columnIndex)!.markedBy;
 
       if (isFound && rowIndex + 1 === ROW_NUM) {
         return {
@@ -165,10 +159,16 @@ export class Board {
       }
     }
 
-    if (this.isFull()) {
+    if (this.isFull) {
       return { winner: "draw" };
     }
 
     return undefined;
+  }
+
+  public clear() {
+    this.cells.forEach(cell => {
+      cell.markedBy = null;
+    });
   }
 }
